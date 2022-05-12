@@ -1,25 +1,40 @@
 package at.technikum.tourplannerbackend.tour;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import at.technikum.tourplannerbackend.dto.TourCreationDto;
+import at.technikum.tourplannerbackend.dto.TourDto;
+import at.technikum.tourplannerbackend.dto.TourMapper;
+import at.technikum.tourplannerbackend.entity.Tour;
+import at.technikum.tourplannerbackend.repository.TourRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class TourController {
 
+    @Autowired
+    private TourRepository tourRepository;
+
     @GetMapping("/tours")
-    public List<String> getTours() {
-        return List.of("Tour 1", "Tour 2", "Tour 3", "Tour 4");
+    public List<TourDto> getTours() {
+        return tourRepository.findAll().stream().map(TourMapper::mapToDto).toList();
     }
 
     @GetMapping("/tours/{id}")
-    public Tour getTourById(@PathVariable Integer id) {
-        Tour tour = new Tour();
-        tour.setId(UUID.randomUUID());
-        tour.setName("Tour 1");
-        return tour;
+    public TourDto getTourById(@PathVariable Long id) {
+        try {
+            Tour tour = tourRepository.getById(id);
+            return TourMapper.mapToDto(tour);
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+    }
+
+    @PostMapping("/tours")
+    public TourDto createTour(@RequestBody TourCreationDto tourDto) {
+        Tour tour = tourRepository.save(TourMapper.fromDto(tourDto));
+        return TourMapper.mapToDto(tour);
     }
 }
