@@ -1,4 +1,4 @@
-package at.technikum.tourplannerbackend.dto;
+package at.technikum.tourplannerbackend.bl.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class TourDto {
-    private String route;
+    private String name;
+    private String from;
+    private String to;
+    private String transportType;
+    private Double distance;
+    private Long estimatedTime;
+    private String imageURL;
     private String description;
     private List<String> logs;
 }

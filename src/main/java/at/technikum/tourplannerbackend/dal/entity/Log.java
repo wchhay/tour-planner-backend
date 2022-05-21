@@ -1,5 +1,4 @@
-package at.technikum.tourplannerbackend.entity;
-
+package at.technikum.tourplannerbackend.dal.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,24 +12,24 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "log")
+@Table(name = "LOG")
 public class Log {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "DATE", nullable = false)
     private Long date;
 
-    @Column(name = "duration", nullable = false)
+    @Column(name = "DURATION", nullable = false)
     private Long duration;
 
-    @Column(name = "distance", nullable = false)
+    @Column(name = "DISTANCE", nullable = false)
     private Long distance;
 
     @ManyToOne
-    @JoinColumn(name ="tour_id", nullable = false)
+    @JoinColumn(name ="TOUR_ID", nullable = false)
     private Tour tourReference;
 
 }
