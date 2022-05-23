@@ -2,6 +2,7 @@ package at.technikum.tourplannerbackend.bl.service;
 
 import at.technikum.tourplannerbackend.bl.dto.TourCreationDto;
 import at.technikum.tourplannerbackend.bl.dto.TourMapper;
+import at.technikum.tourplannerbackend.bl.service.exception.TourNotFoundException;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 import at.technikum.tourplannerbackend.dal.mapquest.DirectionsAPIService;
 import at.technikum.tourplannerbackend.dal.mapquest.StaticMapAPIService;
@@ -33,7 +34,8 @@ public class TourService {
     }
 
     public Tour getById(Long id) {
-        return tourRepository.getById(id);
+        return tourRepository.findById(id)
+                .orElseThrow(TourNotFoundException::new);
     }
 
     public Tour createAndPersistTour(TourCreationDto tourCreationDto) {

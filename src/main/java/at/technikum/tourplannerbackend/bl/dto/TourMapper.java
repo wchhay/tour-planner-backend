@@ -8,7 +8,6 @@ public class TourMapper {
     }
 
     public static TourDto mapToDto(Tour tour) {
-        //TODO: build URL from imagePath
         return TourDto.builder()
                 .name(tour.getName())
                 .from(tour.getFrom())

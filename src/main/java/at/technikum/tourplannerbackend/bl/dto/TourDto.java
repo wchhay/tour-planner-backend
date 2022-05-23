@@ -18,7 +18,6 @@ public class TourDto {
     private String transportType;
     private Double distance;
     private Long estimatedTime;
-    private String imageURL;
     private String description;
     private List<String> logs;
 }

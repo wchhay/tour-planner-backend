@@ -1,7 +1,7 @@
 package at.technikum.tourplannerbackend.dal.mapquest;
 
 import at.technikum.tourplannerbackend.config.MapquestConfig;
-import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageFileException;
+import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageDownloadException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class StaticMapAPIService {
 
             return imagePath;
         } catch (IOException e) {
-            throw new ImageFileException();
+            throw new ImageDownloadException();
         }
     }
 
