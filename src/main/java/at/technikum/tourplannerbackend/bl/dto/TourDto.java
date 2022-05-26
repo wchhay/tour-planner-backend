@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class TourDto {
+    private UUID id;
     private String name;
     private String from;
     private String to;
@@ -19,5 +21,5 @@ public class TourDto {
     private Double distance;
     private Long estimatedTime;
     private String description;
-    private List<String> logs;
+    private List<LogDto> logs;
 }

@@ -7,8 +7,9 @@ public class TourMapper {
     private TourMapper() {
     }
 
-    public static TourDto mapToDto(Tour tour) {
+    public static TourDto toDto(Tour tour) {
         return TourDto.builder()
+                .id(tour.getId())
                 .name(tour.getName())
                 .from(tour.getFrom())
                 .to(tour.getTo())
@@ -16,6 +17,7 @@ public class TourMapper {
                 .distance(tour.getDistance())
                 .estimatedTime(tour.getEstimatedTime())
                 .description(tour.getDescription())
+                .logs(tour.getLogsList().stream().map(LogMapper::toDto).toList())
                 .build();
     }
 

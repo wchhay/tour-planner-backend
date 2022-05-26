@@ -1,13 +1,15 @@
 package at.technikum.tourplannerbackend.dal.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,20 +19,38 @@ public class Log {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private UUID id;
 
-    @Column(name = "DATE", nullable = false)
-    private Long date;
+    @Column(name = "DATE", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime date;
 
-    @Column(name = "DURATION", nullable = false)
-    private Long duration;
+    @Column(name = "COMMENT", length = 1000)
+    private String comment;
 
-    @Column(name = "DISTANCE", nullable = false)
-    private Long distance;
+    @Column(name = "TOTAL_TIME", nullable = false)
+    private Long totalTime;
+
+    @Column(name = "DIFFICULTY", nullable = false, length = 2)
+    private Integer difficulty;
+
+    @Column(name = "RATING", nullable = false, length = 2)
+    private Integer rating;
 
     @ManyToOne
     @JoinColumn(name ="TOUR_ID", nullable = false)
     private Tour tourReference;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Log log = (Log) o;
+        return id != null && Objects.equals(id, log.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
 

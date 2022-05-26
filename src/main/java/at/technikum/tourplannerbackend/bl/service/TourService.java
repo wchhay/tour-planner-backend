@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TourService {
@@ -33,7 +34,7 @@ public class TourService {
         return tourRepository.findAll();
     }
 
-    public Tour getById(Long id) {
+    public Tour getById(UUID id) {
         return tourRepository.findById(id)
                 .orElseThrow(TourNotFoundException::new);
     }
