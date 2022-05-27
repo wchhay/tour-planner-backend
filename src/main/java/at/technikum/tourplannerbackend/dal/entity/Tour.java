@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class Tour {
     private String to;
 
     @Column(name = "TRANSPORT_TYPE", nullable = false)
-    private TransportType transportType;
+    private RouteType routeType;
 
     @Column(name = "DISTANCE", nullable = false)
     private Double distance;
@@ -46,7 +47,7 @@ public class Tour {
     private String description;
 
     @OneToMany(mappedBy = "tourReference", cascade = CascadeType.ALL)
-    private List<Log> logsList;
+    private List<Log> logsList = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

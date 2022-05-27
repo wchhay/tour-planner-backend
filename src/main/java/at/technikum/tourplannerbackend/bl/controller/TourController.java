@@ -9,10 +9,16 @@ import at.technikum.tourplannerbackend.bl.service.TourService;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 import at.technikum.tourplannerbackend.dal.mapquest.ImageFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -52,17 +58,25 @@ public class TourController {
     }
 
     @PostMapping("/tours")
-    public TourDto createTour(@RequestBody TourCreationDto tourDto) {
-        //TODO: Add validations
-
+    public TourDto createTour(@Valid @RequestBody TourCreationDto tourDto) {
         Tour tour = tourService.createAndPersistTour(tourDto);
         return TourMapper.toDto(tour);
     }
 
     @PostMapping("/tours/{id}/logs")
-    public void createLog(@PathVariable("id") UUID id, @RequestBody LogCreationDto logCreationDto) {
-        //TODO: Add validations
-
+    public void createLog(@PathVariable("id") UUID id, @Valid @RequestBody LogCreationDto logCreationDto) {
         logService.createLog(id, logCreationDto);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

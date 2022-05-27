@@ -42,7 +42,8 @@ public class TourService {
     public Tour createAndPersistTour(TourCreationDto tourCreationDto) {
         Tour tour = TourMapper.fromDto(tourCreationDto);
 
-        Route routeResponse = directionsAPIService.getRouteInformation(tour.getFrom(), tour.getTo()).getRoute();
+        Route routeResponse = directionsAPIService.getRouteInformation(tour.getFrom(), tour.getTo(), tour.getRouteType())
+                .getRoute();
 
         String imagePath = staticMapAPIService.getAndSaveMapImage(routeResponse.getSessionId());
 
@@ -50,8 +51,6 @@ public class TourService {
         tour.setEstimatedTime(routeResponse.getTime());
         tour.setImagePath(imagePath);
 
-        tourRepository.save(tour);
-
-        return tour;
+        return tourRepository.save(tour);
     }
 }

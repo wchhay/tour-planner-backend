@@ -1,12 +1,13 @@
 package at.technikum.tourplannerbackend.dal.mapquest;
 
 import at.technikum.tourplannerbackend.config.MapquestConfig;
+import at.technikum.tourplannerbackend.dal.entity.RouteType;
 import at.technikum.tourplannerbackend.dal.mapquest.model.RouteInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
-
 
 @Service
 public class DirectionsAPIService {
@@ -23,12 +24,16 @@ public class DirectionsAPIService {
         this.restTemplate = restTemplate;
     }
 
-    public RouteInformation getRouteInformation(String from, String to) {
-        String uri = UriComponentsBuilder.fromHttpUrl(DIRECTIONS_API_URL)
+    public RouteInformation getRouteInformation(String from, String to, RouteType routeType) {
+        UriBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(DIRECTIONS_API_URL)
                 .queryParam("key", mapquestConfig.getApiKey())
                 .queryParam("from", from)
-                .queryParam("to", to)
-                .build().toUriString();
-        return restTemplate.getForObject(uri, RouteInformation.class);
+                .queryParam("to", to);
+
+        if (null != routeType) {
+            uriBuilder.queryParam("routeType", routeType.value);
+        }
+
+        return restTemplate.getForObject(uriBuilder.build(), RouteInformation.class);
     }
 }

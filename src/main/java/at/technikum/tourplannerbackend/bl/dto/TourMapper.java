@@ -2,6 +2,8 @@ package at.technikum.tourplannerbackend.bl.dto;
 
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 
+import java.util.Collections;
+
 public class TourMapper {
 
     private TourMapper() {
@@ -13,7 +15,7 @@ public class TourMapper {
                 .name(tour.getName())
                 .from(tour.getFrom())
                 .to(tour.getTo())
-                .transportType(tour.getTransportType().name())
+                .transportType(tour.getRouteType().name())
                 .distance(tour.getDistance())
                 .estimatedTime(tour.getEstimatedTime())
                 .description(tour.getDescription())
@@ -26,8 +28,9 @@ public class TourMapper {
                 .name(dto.getName())
                 .from(dto.getFrom())
                 .to(dto.getTo())
-                .transportType(dto.getTransportType())
+                .routeType(dto.getRouteType())
                 .description(dto.getDescription())
+                .logsList(Collections.emptyList())
                 .build();
     }
 
