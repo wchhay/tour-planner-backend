@@ -5,10 +5,12 @@ import at.technikum.tourplannerbackend.bl.dto.TourMapper;
 import at.technikum.tourplannerbackend.bl.service.exception.TourNotFoundException;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 import at.technikum.tourplannerbackend.dal.mapquest.DirectionsAPIService;
-import at.technikum.tourplannerbackend.dal.mapquest.StaticMapAPIService;
+import at.technikum.tourplannerbackend.dal.mapquest.MapImageService;
 import at.technikum.tourplannerbackend.dal.mapquest.model.RouteInformation.Route;
 import at.technikum.tourplannerbackend.dal.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,15 +21,23 @@ public class TourService {
 
     private final DirectionsAPIService directionsAPIService;
 
-    private final StaticMapAPIService staticMapAPIService;
+    private final MapImageService mapImageService;
 
     private final TourRepository tourRepository;
 
+    private final TaskExecutor executor;
+
     @Autowired
-    public TourService(DirectionsAPIService directionsAPIService, StaticMapAPIService staticMapAPIService, TourRepository tourRepository) {
+    public TourService(
+            DirectionsAPIService directionsAPIService,
+            MapImageService mapImageService,
+            TourRepository tourRepository,
+            @Qualifier("threadPoolTaskExecutor") TaskExecutor executor
+    ) {
         this.directionsAPIService = directionsAPIService;
-        this.staticMapAPIService = staticMapAPIService;
+        this.mapImageService = mapImageService;
         this.tourRepository = tourRepository;
+        this.executor = executor;
     }
 
     public List<Tour> getAllTours() {
@@ -45,12 +55,20 @@ public class TourService {
         Route routeResponse = directionsAPIService.getRouteInformation(tour.getFrom(), tour.getTo(), tour.getRouteType())
                 .getRoute();
 
-        String imagePath = staticMapAPIService.getAndSaveMapImage(routeResponse.getSessionId());
+        // run image download in background
+        String imagePath = mapImageService.buildImagePath();
+        executor.execute(() -> mapImageService.downloadAndSaveMapImage(routeResponse.getSessionId(), imagePath));
 
         tour.setDistance(routeResponse.getDistance());
         tour.setEstimatedTime(routeResponse.getTime());
         tour.setImagePath(imagePath);
 
         return tourRepository.save(tour);
+    }
+
+    public byte[] getMapImage(UUID id) {
+        Tour tour = getById(id);
+
+        return mapImageService.readFromFile(tour.getImagePath());
     }
 }

@@ -7,7 +7,6 @@ import at.technikum.tourplannerbackend.bl.dto.TourMapper;
 import at.technikum.tourplannerbackend.bl.service.LogService;
 import at.technikum.tourplannerbackend.bl.service.TourService;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
-import at.technikum.tourplannerbackend.dal.mapquest.ImageFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,13 +27,10 @@ public class TourController {
 
     private final LogService logService;
 
-    private final ImageFileService imageFileService;
-
     @Autowired
-    public TourController(TourService tourService, LogService logService, ImageFileService imageFileService) {
+    public TourController(TourService tourService, LogService logService) {
         this.tourService = tourService;
         this.logService = logService;
-        this.imageFileService = imageFileService;
     }
 
     @GetMapping("/tours")
@@ -53,8 +49,7 @@ public class TourController {
         produces = MediaType.IMAGE_JPEG_VALUE
     )
     public byte[] getTourMapImage(@PathVariable("id") UUID id) {
-        Tour tour = tourService.getById(id);
-        return imageFileService.readFromFile(tour.getImagePath());
+        return tourService.getMapImage(id);
     }
 
     @PostMapping("/tours")
