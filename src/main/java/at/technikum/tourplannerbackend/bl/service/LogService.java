@@ -25,11 +25,11 @@ public class LogService {
         this.tourRepository = tourRepository;
     }
 
-    public void createLog(UUID tourId, LogCreationDto logCreationDto) {
+    public Log createLog(UUID tourId, LogCreationDto logCreationDto) {
         Log log = LogMapper.fromDto(logCreationDto);
         Tour tour = tourRepository.findById(tourId).orElseThrow(TourNotFoundException::new);
         log.setTourReference(tour);
 
-        logRepository.save(log);
+        return logRepository.save(log);
     }
 }

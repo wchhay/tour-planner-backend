@@ -3,6 +3,7 @@ package at.technikum.tourplannerbackend.bl.dto;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 
 import java.util.Collections;
+import java.util.function.Consumer;
 
 public class TourMapper {
 
@@ -15,7 +16,7 @@ public class TourMapper {
                 .name(tour.getName())
                 .from(tour.getFrom())
                 .to(tour.getTo())
-                .transportType(tour.getRouteType().name())
+                .transportType(tour.getTransportType().name())
                 .distance(tour.getDistance())
                 .estimatedTime(tour.getEstimatedTime())
                 .description(tour.getDescription())
@@ -28,10 +29,24 @@ public class TourMapper {
                 .name(dto.getName())
                 .from(dto.getFrom())
                 .to(dto.getTo())
-                .routeType(dto.getRouteType())
+                .transportType(dto.getTransportType())
                 .description(dto.getDescription())
                 .logsList(Collections.emptyList())
                 .build();
+    }
+
+    public static void updateFromDto(Tour tour, TourUpdateDto dto) {
+        setIfNotNull(dto.getName(), tour::setName);
+        setIfNotNull(dto.getFrom(), tour::setFrom);
+        setIfNotNull(dto.getTo(), tour::setTo);
+        setIfNotNull(dto.getTransportType(), tour::setTransportType);
+        setIfNotNull(dto.getDescription(), tour::setDescription);
+    }
+
+    private static <T> void setIfNotNull(T value, Consumer<T> setter) {
+        if (null != value) {
+            setter.accept(value);
+        }
     }
 
 }

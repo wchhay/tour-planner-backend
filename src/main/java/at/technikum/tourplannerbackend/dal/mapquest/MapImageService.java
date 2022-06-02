@@ -2,7 +2,7 @@ package at.technikum.tourplannerbackend.dal.mapquest;
 
 import at.technikum.tourplannerbackend.config.MapquestConfig;
 import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageDownloadException;
-import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageReadException;
+import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageFileException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,17 @@ public class MapImageService {
         try {
             return Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
-            throw new ImageReadException();
+            throw new ImageFileException();
+        }
+    }
+
+    public void deleteImageFile(String path) {
+        try {
+            if (!Files.deleteIfExists(Paths.get(path))) {
+                // TODO: Log that file does not exist
+            }
+        } catch (IOException e) {
+            throw new ImageFileException();
         }
     }
 

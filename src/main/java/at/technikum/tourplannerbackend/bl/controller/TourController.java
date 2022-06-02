@@ -1,11 +1,9 @@
 package at.technikum.tourplannerbackend.bl.controller;
 
-import at.technikum.tourplannerbackend.bl.dto.LogCreationDto;
-import at.technikum.tourplannerbackend.bl.dto.TourCreationDto;
-import at.technikum.tourplannerbackend.bl.dto.TourDto;
-import at.technikum.tourplannerbackend.bl.dto.TourMapper;
+import at.technikum.tourplannerbackend.bl.dto.*;
 import at.technikum.tourplannerbackend.bl.service.LogService;
 import at.technikum.tourplannerbackend.bl.service.TourService;
+import at.technikum.tourplannerbackend.dal.entity.Log;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,8 +57,20 @@ public class TourController {
     }
 
     @PostMapping("/tours/{id}/logs")
-    public void createLog(@PathVariable("id") UUID id, @Valid @RequestBody LogCreationDto logCreationDto) {
-        logService.createLog(id, logCreationDto);
+    public LogDto createLog(@PathVariable("id") UUID id, @Valid @RequestBody LogCreationDto logCreationDto) {
+        Log log = logService.createLog(id, logCreationDto);
+        return LogMapper.toDto(log);
+    }
+
+    @PutMapping("/tours/{id}")
+    public TourDto updateTour(@PathVariable("id") UUID id, @Valid @RequestBody TourUpdateDto tourUpdateDto) {
+        Tour tour = tourService.updateTour(id, tourUpdateDto);
+        return TourMapper.toDto(tour);
+    }
+
+    @DeleteMapping("/tours/{id}")
+    public void deleteTour(@PathVariable("id") UUID id) {
+        tourService.deleteTour(id);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -32,7 +32,7 @@ public class Tour {
     private String to;
 
     @Column(name = "TRANSPORT_TYPE", nullable = false)
-    private RouteType routeType;
+    private TransportType transportType;
 
     @Column(name = "DISTANCE", nullable = false)
     private Double distance;
@@ -46,7 +46,7 @@ public class Tour {
     @Column(name = "DESCRIPTION", length = 1000)
     private String description;
 
-    @OneToMany(mappedBy = "tourReference", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tourReference", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Log> logsList = new ArrayList<>();
 
     @Override

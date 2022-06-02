@@ -1,7 +1,7 @@
 package at.technikum.tourplannerbackend.dal.entity;
 
 
-public enum RouteType {
+public enum TransportType {
     BICYCLE("bicycle"),
     PEDESTRIAN("pedestrian"),
     FASTEST("fastest"),
@@ -9,7 +9,7 @@ public enum RouteType {
 
     public final String value;
 
-    RouteType(String value) {
+    TransportType(String value) {
         this.value = value;
     }
 }
