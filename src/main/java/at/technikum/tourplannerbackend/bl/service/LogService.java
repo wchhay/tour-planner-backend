@@ -1,7 +1,10 @@
 package at.technikum.tourplannerbackend.bl.service;
 
 import at.technikum.tourplannerbackend.bl.dto.LogCreationDto;
-import at.technikum.tourplannerbackend.bl.dto.LogMapper;
+import at.technikum.tourplannerbackend.bl.dto.mapper.LogMapper;
+import at.technikum.tourplannerbackend.bl.dto.LogUpdateDto;
+import at.technikum.tourplannerbackend.bl.service.exception.LogNotFoundException;
+import at.technikum.tourplannerbackend.bl.service.exception.TourIdMismatchException;
 import at.technikum.tourplannerbackend.bl.service.exception.TourNotFoundException;
 import at.technikum.tourplannerbackend.dal.entity.Log;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
@@ -31,5 +34,28 @@ public class LogService {
         log.setTourReference(tour);
 
         return logRepository.save(log);
+    }
+
+    public Log getLogById(UUID logId) {
+        return logRepository.findById(logId).orElseThrow(LogNotFoundException::new);
+    }
+
+    public Log updateLog(UUID tourId, UUID logId, LogUpdateDto logUpdateDto) {
+        Log log = getLogById(logId);
+        validateMatchingTourId(tourId, log);
+        LogMapper.updateLog(log, logUpdateDto);
+        return logRepository.save(log);
+    }
+
+    public void deleteLog(UUID tourId, UUID logId) {
+        Log log = getLogById(logId);
+        validateMatchingTourId(tourId, log);
+        logRepository.deleteById(logId);
+    }
+
+    private void validateMatchingTourId(UUID tourId, Log log) {
+        if (log.getTourReference().getId().compareTo(tourId) != 0) {
+            throw new TourIdMismatchException();
+        }
     }
 }

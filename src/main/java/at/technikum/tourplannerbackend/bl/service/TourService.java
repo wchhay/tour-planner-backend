@@ -1,7 +1,7 @@
 package at.technikum.tourplannerbackend.bl.service;
 
 import at.technikum.tourplannerbackend.bl.dto.TourCreationDto;
-import at.technikum.tourplannerbackend.bl.dto.TourMapper;
+import at.technikum.tourplannerbackend.bl.dto.mapper.TourMapper;
 import at.technikum.tourplannerbackend.bl.dto.TourUpdateDto;
 import at.technikum.tourplannerbackend.bl.service.exception.TourNotFoundException;
 import at.technikum.tourplannerbackend.dal.entity.Tour;

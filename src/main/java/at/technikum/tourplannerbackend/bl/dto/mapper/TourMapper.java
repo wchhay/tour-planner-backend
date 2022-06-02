@@ -1,9 +1,13 @@
-package at.technikum.tourplannerbackend.bl.dto;
+package at.technikum.tourplannerbackend.bl.dto.mapper;
 
+import at.technikum.tourplannerbackend.bl.dto.TourCreationDto;
+import at.technikum.tourplannerbackend.bl.dto.TourDto;
+import at.technikum.tourplannerbackend.bl.dto.TourUpdateDto;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 
 import java.util.Collections;
-import java.util.function.Consumer;
+
+import static at.technikum.tourplannerbackend.bl.dto.mapper.MapperUtils.setIfNotNull;
 
 public class TourMapper {
 
@@ -42,11 +46,4 @@ public class TourMapper {
         setIfNotNull(dto.getTransportType(), tour::setTransportType);
         setIfNotNull(dto.getDescription(), tour::setDescription);
     }
-
-    private static <T> void setIfNotNull(T value, Consumer<T> setter) {
-        if (null != value) {
-            setter.accept(value);
-        }
-    }
-
 }
