@@ -16,12 +16,12 @@ public class LogUpdateDto {
 
     private Long totalTime;
 
-    @Min(0)
-    @Max(10)
+    @Min(1)
+    @Max(5)
     private Integer difficulty;
 
-    @Min(0)
-    @Max(10)
+    @Min(1)
+    @Max(5)
     private Integer rating;
 
     private String comment;
