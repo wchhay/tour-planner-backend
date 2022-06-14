@@ -5,8 +5,6 @@ import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageDownloadExcep
 import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageFileException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -25,20 +23,15 @@ public class MapImageServiceImpl implements MapImageService {
 
     private final MapquestConfig mapquestConfig;
 
-    private final TaskExecutor executor;
-
     @Autowired
-    public MapImageServiceImpl(MapquestConfig mapquestConfig, @Qualifier("threadPoolTaskExecutor") TaskExecutor executor) {
+    public MapImageServiceImpl(MapquestConfig mapquestConfig) {
         this.mapquestConfig = mapquestConfig;
-        this.executor = executor;
     }
 
     @Override
     public String downloadAndSaveMapImage(String sessionId) {
         String imagePath = buildImagePath();
-
-        // run image download in background
-        executor.execute(() -> downloadAndSaveImage(imagePath, sessionId));
+        downloadAndSaveImage(imagePath, sessionId);
 
         return imagePath;
     }
