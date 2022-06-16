@@ -4,10 +4,13 @@ import at.technikum.tourplannerbackend.bl.dto.LogCreationDto;
 import at.technikum.tourplannerbackend.bl.dto.LogUpdateDto;
 import at.technikum.tourplannerbackend.dal.entity.Log;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface LogService {
     Log createLog(UUID tourId, LogCreationDto logCreationDto);
+
+    List<Log> getLogsForTour(UUID tourId);
 
     Log getLogById(UUID logId);
 

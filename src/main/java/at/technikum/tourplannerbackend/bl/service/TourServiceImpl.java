@@ -64,9 +64,11 @@ public class TourServiceImpl implements TourService {
     @Override
     public Tour updateTour(UUID id, TourUpdateDto tourUpdateDto) {
         Tour tour = getById(id);
+        boolean mapquestRequestRequired = mapquestRequestRequired(tourUpdateDto, tour);
+
         TourMapper.updateFromDto(tour, tourUpdateDto);
 
-        if (mapquestRequestNeeded(tourUpdateDto)) {
+        if (mapquestRequestRequired) {
             mapImageService.deleteImageFile(tour.getImagePath());
             fetchRouteInformationAndImage(tour);
         }
@@ -82,8 +84,10 @@ public class TourServiceImpl implements TourService {
         tourRepository.delete(tour);
     }
 
-    private boolean mapquestRequestNeeded(TourUpdateDto tourUpdateDto) {
-        return null != tourUpdateDto.getFrom() || null != tourUpdateDto.getTo();
+    private boolean mapquestRequestRequired(TourUpdateDto dto, Tour tour) {
+        return !(tour.getFrom().equals(dto.getFrom()))
+                || !(tour.getTo().equals(dto.getTo()))
+                || !(tour.getTransportType().equals(dto.getTransportType()));
     }
 
     private void fetchRouteInformationAndImage(Tour tour) {

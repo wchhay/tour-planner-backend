@@ -13,6 +13,7 @@ import at.technikum.tourplannerbackend.dal.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,6 +36,12 @@ public class LogServiceImpl implements LogService {
         log.setTourReference(tour);
 
         return logRepository.save(log);
+    }
+
+    @Override
+    public List<Log> getLogsForTour(UUID tourId) {
+        Tour tour = tourRepository.findById(tourId).orElseThrow(TourNotFoundException::new);
+        return tour.getLogsList();
     }
 
     @Override

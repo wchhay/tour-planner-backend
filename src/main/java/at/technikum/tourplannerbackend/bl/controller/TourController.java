@@ -52,6 +52,11 @@ public class TourController {
         return tourService.getMapImage(id);
     }
 
+    @GetMapping("/tours/{id}/logs")
+    public List<LogDto> getLogs(@PathVariable("id") UUID tourId) {
+        return logService.getLogsForTour(tourId).stream().map(LogMapper::toDto).toList();
+    }
+
     @PostMapping("/tours")
     public TourDto createTour(@Valid @RequestBody TourCreationDto tourDto) {
         Tour tour = tourService.createAndPersistTour(tourDto);
