@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DirectionsAPIServiceImpl implements DirectionsAPIService {
 
     public static final String DIRECTIONS_API_URL = "https://www.mapquestapi.com/directions/v2/route";
+    public static final String KILOMETERS = "k";
 
     private final MapquestConfig mapquestConfig;
 
@@ -30,6 +31,7 @@ public class DirectionsAPIServiceImpl implements DirectionsAPIService {
                 .queryParam("key", mapquestConfig.getApiKey())
                 .queryParam("from", from)
                 .queryParam("to", to)
+                .queryParam("unit", KILOMETERS)
                 .queryParam("routeType", transportType.value);
 
         return restTemplate.getForObject(uriBuilder.build(), RouteInformation.class);
