@@ -9,12 +9,14 @@ import at.technikum.tourplannerbackend.dal.mapquest.DirectionsAPIService;
 import at.technikum.tourplannerbackend.dal.mapquest.MapImageService;
 import at.technikum.tourplannerbackend.dal.mapquest.model.RouteInformation.Route;
 import at.technikum.tourplannerbackend.dal.repository.TourRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Log4j2
 @Service
 public class TourServiceImpl implements TourService {
 
@@ -37,17 +39,20 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<Tour> getAllTours() {
+        logger.info("Retrieving all tours");
         return tourRepository.findAll();
     }
 
     @Override
     public Tour getById(UUID id) {
+        logger.info("Retrieving tour with tourId={}", id);
         return tourRepository.findById(id)
                 .orElseThrow(TourNotFoundException::new);
     }
 
     @Override
     public Tour createAndPersistTour(TourCreationDto tourCreationDto) {
+        logger.info("Creating new tour");
         Tour tour = TourMapper.fromDto(tourCreationDto);
         fetchRouteInformationAndImage(tour);
 
@@ -56,6 +61,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public byte[] getMapImage(UUID id) {
+        logger.info("Retrieving map image for tourId={}", id);
         Tour tour = getById(id);
 
         return mapImageService.readFromFile(tour.getImagePath());
@@ -63,12 +69,14 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public Tour updateTour(UUID id, TourUpdateDto tourUpdateDto) {
+        logger.info("Updating tour with tourId={}", id);
         Tour tour = getById(id);
         boolean mapquestRequestRequired = mapquestRequestRequired(tourUpdateDto, tour);
 
         TourMapper.updateFromDto(tour, tourUpdateDto);
 
         if (mapquestRequestRequired) {
+            logger.info("Re-fetching route information and image from Mapquest API for tourId={}", id);
             mapImageService.deleteImageFile(tour.getImagePath());
             fetchRouteInformationAndImage(tour);
         }
@@ -78,6 +86,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public void deleteTour(UUID id) {
+        logger.info("Deleting tour with tourId={}", id);
         Tour tour = getById(id);
         mapImageService.deleteImageFile(tour.getImagePath());
 
@@ -85,9 +94,13 @@ public class TourServiceImpl implements TourService {
     }
 
     private boolean mapquestRequestRequired(TourUpdateDto dto, Tour tour) {
-        return !(tour.getFrom().equals(dto.getFrom()))
-                || !(tour.getTo().equals(dto.getTo()))
-                || !(tour.getTransportType().equals(dto.getTransportType()));
+        return isNotNullAndDifferent(dto.getFrom(), tour.getFrom())
+                || isNotNullAndDifferent(dto.getTo(), tour.getTo())
+                || isNotNullAndDifferent(dto.getTransportType(), tour.getTransportType());
+    }
+
+    private <T> boolean isNotNullAndDifferent(T dtoValue, T tourValue) {
+        return (null != dtoValue && !dtoValue.equals(tourValue));
     }
 
     private void fetchRouteInformationAndImage(Tour tour) {

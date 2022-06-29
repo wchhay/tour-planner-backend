@@ -10,12 +10,14 @@ import at.technikum.tourplannerbackend.dal.entity.Log;
 import at.technikum.tourplannerbackend.dal.entity.Tour;
 import at.technikum.tourplannerbackend.dal.repository.LogRepository;
 import at.technikum.tourplannerbackend.dal.repository.TourRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Log4j2
 @Service
 public class LogServiceImpl implements LogService {
 
@@ -31,6 +33,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public Log createLog(UUID tourId, LogCreationDto logCreationDto) {
+        logger.info("Creating log for tourId={}", tourId);
         Log log = LogMapper.fromDto(logCreationDto);
         Tour tour = tourRepository.findById(tourId).orElseThrow(TourNotFoundException::new);
         log.setTourReference(tour);
@@ -40,17 +43,20 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<Log> getLogsForTour(UUID tourId) {
+        logger.info("Retrieving logs for tourId={}", tourId);
         Tour tour = tourRepository.findById(tourId).orElseThrow(TourNotFoundException::new);
         return tour.getLogsList();
     }
 
     @Override
     public Log getLogById(UUID logId) {
+        logger.info("Retrieving log with logId={}", logId);
         return logRepository.findById(logId).orElseThrow(LogNotFoundException::new);
     }
 
     @Override
     public Log updateLog(UUID tourId, UUID logId, LogUpdateDto logUpdateDto) {
+        logger.info("Updating log with logId={}, tourId={}", logId, tourId);
         Log log = getLogById(logId);
         validateMatchingTourId(tourId, log);
         LogMapper.updateLog(log, logUpdateDto);
@@ -59,6 +65,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public void deleteLog(UUID tourId, UUID logId) {
+        logger.info("Deleting log with logId={}, tourId={}", logId, tourId);
         Log log = getLogById(logId);
         validateMatchingTourId(tourId, log);
         logRepository.deleteById(logId);

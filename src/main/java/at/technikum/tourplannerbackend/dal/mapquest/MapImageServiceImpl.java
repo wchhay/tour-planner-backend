@@ -3,6 +3,7 @@ package at.technikum.tourplannerbackend.dal.mapquest;
 import at.technikum.tourplannerbackend.config.MapquestConfig;
 import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageDownloadException;
 import at.technikum.tourplannerbackend.dal.mapquest.exception.ImageFileException;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+@Log4j2
 @Service
 public class MapImageServiceImpl implements MapImageService {
 
@@ -49,7 +51,7 @@ public class MapImageServiceImpl implements MapImageService {
     public void deleteImageFile(String path) {
         try {
             if (!Files.deleteIfExists(Paths.get(path))) {
-                // TODO: Log that file does not exist
+                logger.info("Trying to not existing file, path={}", path);
             }
         } catch (IOException e) {
             throw new ImageFileException();
