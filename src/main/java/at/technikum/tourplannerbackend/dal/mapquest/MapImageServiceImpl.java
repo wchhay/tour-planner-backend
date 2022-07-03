@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Log4j2
@@ -26,8 +27,10 @@ public class MapImageServiceImpl implements MapImageService {
     private final MapquestConfig mapquestConfig;
 
     @Autowired
-    public MapImageServiceImpl(MapquestConfig mapquestConfig) {
+    public MapImageServiceImpl(MapquestConfig mapquestConfig) throws IOException {
         this.mapquestConfig = mapquestConfig;
+
+        createImagesDirIfNotExists(mapquestConfig.getImagesDir());
     }
 
     @Override
@@ -82,5 +85,12 @@ public class MapImageServiceImpl implements MapImageService {
 
     private void writeToJPGFile(RenderedImage image, String path) throws IOException {
         ImageIO.write(image, "jpg", new File(path));
+    }
+
+    private void createImagesDirIfNotExists(String imagesDir) throws IOException {
+        Path path = Path.of(imagesDir);
+        if (!Files.isDirectory(path)) {
+            Files.createDirectories(path);
+        }
     }
 }
